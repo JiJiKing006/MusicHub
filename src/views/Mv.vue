@@ -65,7 +65,6 @@
         </ul>
       </div>
     </div>
-
     <div class="mv_wrap">
       <div class="mvBox" v-for="(song, index) in songMsg" :key="index">
         <div class="mvBox_Img">
@@ -76,7 +75,7 @@
           <!-- 点击播放按钮跳转mv详情 -->
           <span
             class="el-icon-video-play iconPlay"
-            @click="toMvList(song.id, song.artistId)"
+            @click="toMvList(song.id, song.artistId || 854363)"
           ></span>
           <span class="time">{{ song.duration | formatDate }}</span>
         </div>
@@ -86,6 +85,7 @@
         </div>
       </div>
     </div>
+    <!-- 加载图标 -->
     <el-pagination
       background
       layout="prev, pager, next"

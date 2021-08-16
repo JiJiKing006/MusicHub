@@ -14,7 +14,7 @@
           <img :src="playMsg.creator.avatarUrl" alt="" />
           <span>{{ playMsg.creator.nickname }}</span
           ><span class="small">{{
-            playMsg.createTime | formatDay(xxxx - mm - dd)
+            playMsg.createTime | formatDay("xxxx-mm-dd")
           }}</span
           >创建
         </p>
@@ -29,7 +29,9 @@
           </span>
         </div>
         <!-- 简介 -->
-        <p class="content">简介：{{ playMsg.description }}</p>
+        <p class="content">
+          简介：<span class="small">{{ playMsg.description }}</span>
+        </p>
       </section>
     </section>
     <el-tabs v-model="activeName" class="detail_bottom">
@@ -52,11 +54,19 @@
                   <!-- 点击这里播发歌曲 -->
                   <img :src="song.al.picUrl" /><span
                     class="el-icon-video-play iconPlay"
-                    @click="player(song.id)"
+                    @click="player(song.id, song.name)"
                   ></span>
                 </div>
               </td>
-              <td>{{ song.name }}</td>
+              <td>
+                {{ song.name }}
+                <!-- 点击mv图案跳转到mv详情页 -->
+                <span
+                  v-if="song.mv != 0"
+                  class="pointer mv el-icon-video-camera"
+                  @click="toMvList(song.mv, song.ar[0].id)"
+                ></span>
+              </td>
               <td>{{ song.ar[0].name }}</td>
               <td>{{ song.al.name }}</td>
               <td>{{ song.dt | formatDate }}</td>
@@ -108,6 +118,13 @@
               @current-change="hotUpdate"
             />
           </div>
+          <!-- 分隔线 -->
+          <el-divider
+            ><i class="el-icon-caret-bottom"></i
+            ><i class="el-icon-caret-bottom"></i
+            ><i class="el-icon-caret-bottom"></i
+            ><i class="el-icon-caret-bottom"></i
+          ></el-divider>
           <!-- 最新评论 -->
           <div class="Comment">
             <h4>
@@ -207,6 +224,7 @@ export default {
       }
     },
   },
+
   methods: {
     getMsg() {
       axios({
@@ -217,7 +235,6 @@ export default {
       }).then(({ data }) => {
         this.playMsg = data.playlist;
         this.tracks = data.playlist.tracks;
-        console.log(data.playlist);
       });
     },
     // 获取最热评论
@@ -262,20 +279,18 @@ export default {
       this.getNewComment();
     },
 
-    // 播放歌曲
-    player(id) {
-      // 播放歌曲
-      axios({
-        url: "https://autumnfish.cn/song/url",
-        params: {
+    // 播放歌曲 调用全局播放事件
+    player(...songMsg) {
+      this.$store.commit("PLAY", songMsg);
+    },
+    // 跳转mv详情路由 并且传id
+    toMvList(id, artistId) {
+      this.$router.push({
+        path: "/mvlist",
+        query: {
           id,
+          artistId,
         },
-      }).then(({ data: { data } }) => {
-        if (data[0].url) {
-          this.$store.state.musicUrl = data[0].url;
-        } else {
-          this.$message.error("就是不给听");
-        }
       });
     },
   },
@@ -325,45 +340,6 @@ export default {
       }
       .content {
         font-size: 15px;
-      }
-    }
-  }
-  .conmentWrap {
-    .Comment {
-      margin-bottom: 30px;
-      h4 {
-        margin-bottom: 10px;
-      }
-      .commentBox {
-        display: flex;
-        margin-bottom: 20px;
-        .img {
-          margin-right: 10px;
-          img {
-            width: 40px;
-            height: 40px;
-            border-radius: 100%;
-          }
-        }
-        .comments {
-          width: 100%;
-          padding: 10px;
-          font-size: 16px;
-          border-radius: 5px;
-          background-color: rgb(225, 224, 224);
-          span.name {
-            color: blue;
-            font-size: 14px;
-          }
-          .reply {
-            display: inline-block;
-            width: 100%;
-            border-radius: 5px;
-            margin: 5px 0;
-            padding: 5px 15px;
-            background-color: rgb(208, 208, 208);
-          }
-        }
       }
     }
   }

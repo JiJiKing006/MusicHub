@@ -49,7 +49,7 @@
         </li>
       </ul>
     </div>
-    <table>
+    <table v-if="!isLoading">
       <thead>
         <th></th>
         <th></th>
@@ -65,17 +65,27 @@
             <div class="songImg">
               <img :src="song.album.picUrl" /><span
                 class="el-icon-video-play iconPlay"
-                @click="player(song.id)"
+                @click="player(song.id, song.name)"
               ></span>
             </div>
           </td>
-          <td>{{ song.name }}</td>
+          <td>
+            {{ song.name }}
+            <!-- 点击mv图案跳转到mv详情页 -->
+            <span
+              v-if="song.mvid != 0"
+              class="pointer mv el-icon-video-camera"
+              @click="toMvList(song.mvid, song.artists[0].id)"
+            ></span>
+          </td>
           <td>{{ song.artists[0].name }}</td>
           <td>{{ song.album.name }}</td>
           <td>{{ song.duration | formatDate }}</td>
         </tr>
       </tbody>
     </table>
+    <!-- 加载图标 -->
+    <div v-else class="load el-icon-loading"></div>
   </div>
 </template>
 
@@ -88,7 +98,8 @@ export default {
     return {
       // 点击标签高亮显示
       tag: "全部",
-
+      // 判断是否处于加载
+      isLoading: true,
       // 歌曲类型编号
       typeId: 0,
       //歌曲相关信息
@@ -99,6 +110,9 @@ export default {
     tag: {
       immediate: true,
       handler() {
+        // 每次触发之前先展示加载中
+        this.isLoading = true;
+        // 再调用搜索，方法里有关闭加载
         this.getSong();
       },
     },
@@ -111,23 +125,23 @@ export default {
           type: this.typeId,
         },
       }).then(({ data: { data } }) => {
-        // 获取歌曲信息
-        this.songMsg = data.slice(0, 10);
+        // 获取歌曲信息    只拿20条
+        this.songMsg = data.slice(0, 20);
+        this.isLoading = false;
       });
     },
-    player(id) {
-      // 播放歌曲
-      axios({
-        url: "https://autumnfish.cn/song/url",
-        params: {
+    // 播放歌曲 调用全局播放事件
+    player(...songMsg) {
+      this.$store.commit("PLAY", songMsg);
+    },
+    // 跳转mv详情路由 并且传id
+    toMvList(id, artistId) {
+      this.$router.push({
+        path: "/mvlist",
+        query: {
           id,
+          artistId,
         },
-      }).then(({ data: { data } }) => {
-        if (data[0].url) {
-          this.$store.state.musicUrl = data[0].url;
-        } else {
-          this.$message.error("就是不给听");
-        }
       });
     },
   },
@@ -141,3 +155,4 @@ export default {
   },
 };
 </script>
+

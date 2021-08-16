@@ -6,31 +6,21 @@
       class="loginContainer"
       :rules="rules"
     >
-      <h3 class="loginTitle">系统登入</h3>
+      <h3 class="loginTitle">登入网易云音乐</h3>
       <!-- 登入相关输入框 -->
       <el-form-item prop="username">
         <el-input
           type="text"
-          v-model.trim="loginForm.username"
-          placeholder="请输入用户名"
+          v-model="loginForm.username"
+          placeholder="请输入手机号"
         />
       </el-form-item>
       <el-form-item prop="password">
         <el-input
           type="password"
-          v-model.number="loginForm.password"
+          v-model="loginForm.password"
           placeholder="请输入密码"
         />
-      </el-form-item>
-      <!-- 验证码 -->
-      <el-form-item prop="code">
-        <el-input
-          type="text"
-          v-model.number="loginForm.code"
-          placeholder="点击图片更换验证码"
-          style="width: 200px"
-        />
-        <img :src="captchaUrl" />
       </el-form-item>
       <el-form-item>
         <el-checkbox v-model="checked" class="loginRemember"
@@ -45,34 +35,83 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "Login",
   data() {
     return {
-      captchaUrl: "",
       loginForm: {
-        username: "admin",
-        password: "123",
-        code: "",
+        username: localStorage.getItem("phone"),
+        password: localStorage.getItem("pwd"),
       },
-      checked: true,
       //   表单验证
       rules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入手机号",
+            trigger: "blur",
+          },
+          {
+            type: "string",
+            message: "请输入正确的手机号",
+            len: 11,
+            trigger: "blur",
+          },
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        code: [{ required: true, message: "请输入验证码", trigger: "blur" }],
       },
+      // 记住用户
+      checked: true,
     };
   },
   methods: {
     submitLogin() {
+      // 表单验证
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.$message.success("登入成功");
+          // 表单填写正确就开始调取接口
+          axios({
+            url: "https://autumnfish.cn/login/cellphone",
+            params: {
+              phone: this.loginForm.username,
+              password: this.loginForm.password,
+            },
+          })
+            .then(({ data }) => {
+              if (data.code == 200) {
+                this.$message.success("登入成功");
+                // 用户id
+                this.$store.state.login.id = data.profile.userId;
+                // // 用户头像   同时存入session
+                this.$store.state.login.avatarUrl = data.profile.avatarUrl;
+                // // 昵称
+                this.$store.state.login.nickName = data.profile.nickname;
+                // 登入完就返回主页
+                this.$router.replace("/myhome");
+                // console.log(this.$store.state.login.avatarUrl);
+
+                // // 背景图片
+                this.$store.state.login[1] = data.profile.backgroundUrl;
+                // 判断有无勾选记住我
+                if (this.checked) {
+                  localStorage.setItem("phone", this.loginForm.username);
+                  localStorage.setItem("pwd", this.loginForm.password);
+                } else {
+                  localStorage.removeItem("phone");
+                  localStorage.removeItem("pwd");
+                }
+              } else if (data.code == 502) {
+                this.$message.error(data.msg);
+              } else {
+                this.$message.error("账号不存在！");
+              }
+            })
+            .catch(function () {
+              alert("请再一次核对账号！");
+            });
         } else {
-          this.$message.error("请输入所有字段");
+          this.$message.error("请按要求输入所有字段");
           return false;
         }
       });
@@ -84,7 +123,7 @@ export default {
 <style lang="less" scoped>
 .loginContainer {
   width: 400px;
-  margin: 100px auto;
+  margin: 80px auto;
   padding: 15px 35px 15px 35px;
   background-color: #fff;
   background-clip: padding-box;

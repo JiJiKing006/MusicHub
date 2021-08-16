@@ -38,7 +38,7 @@
             <img :src="song.picUrl" alt="" />
             <span
               class="el-icon-video-play iconPlay"
-              @click="playMusic(song.id)"
+              @click="player(song.id, song.name)"
             ></span>
           </div>
           <div class="newSong_msg">
@@ -127,8 +127,8 @@ export default {
       mvList: [],
     };
   },
-  // 时长格式化
   filters: {
+    // 时长格式化
     formatDate(val) {
       const all = val / 1000;
       const m = (parseInt(all / 60) + "").padStart(2, "0");
@@ -137,22 +137,13 @@ export default {
     },
   },
   methods: {
-    playMusic(id) {
-      // 播放音乐
-      axios({
-        url: " https://autumnfish.cn/song/url",
-        params: { id },
-      }).then(({ data: { data } }) => {
-        if (data[0].url) {
-          this.$store.state.musicUrl = data[0].url;
-        } else {
-          this.$message.error("就是不给听");
-        }
-
-        // 第二方法，不用vuex
-        // this.$parent.musicUrl = res.data.data[0].url;
-      });
+    // 播放歌曲 调用全局播放事件
+    player(...songMsg) {
+      this.$store.commit("PLAY", songMsg);
+      // 第二方法，不用vuex
+      // this.$parent.musicUrl = res.data.data[0].url;
     },
+
     // 点击歌单。拿到id传给歌单组件
     toSongList(id) {
       this.$router.push({

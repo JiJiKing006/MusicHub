@@ -2,14 +2,17 @@
   <div class="result">
     <h1>
       {{ $route.query.title
-      }}<span class="count">共找到 {{ total || "若干" }} 结果</span>
+      }}<span class="count"
+        >共找到 <span>{{ total }}</span> 结果</span
+      >
     </h1>
     <div class="musicBox">
-      <el-tabs v-model="activeName">
+      <!-- // 点击其他标签页，分页变成1 -->
+      <el-tabs v-model="activeName" @tab-click="page = 1">
         <!-- 搜索歌曲结果 -->
         <el-tab-pane label="歌曲" name="song">
           <table>
-            <thead>
+            <thead v-show="total">
               <th></th>
               <th>音乐标题</th>
               <th>歌手</th>
@@ -20,9 +23,11 @@
               <tr class="T_row" v-for="(song, index) in songs" :key="index">
                 <td>{{ index + 1 }}</td>
                 <td>
-                  <el-link type="info" @click.native="play(song.id)">{{
-                    song.name
-                  }}</el-link>
+                  <el-link
+                    type="info"
+                    @click.native="player(song.id, song.name)"
+                    >{{ song.name }}</el-link
+                  >
                   <!-- 点击mv图案跳转到mv详情页 -->
                   <span
                     v-if="song.mvid != 0"
@@ -80,15 +85,17 @@
           </div>
         </el-tab-pane>
       </el-tabs>
+
+      <el-empty v-show="!total" description="暂无搜索结果" />
       <!-- 分页器 -->
       <el-pagination
+        v-show="total"
         background
         layout="prev, pager, next"
         :current-page="page"
         :total="total"
         @current-change="update"
-      >
-      </el-pagination>
+      />
     </div>
   </div>
 </template>
@@ -174,20 +181,15 @@ export default {
           offset: (this.page - 1) * 10,
         },
       }).then(({ data: { result } }) => {
-        // console.log(result);
         // ---------------歌曲调用-------
         if (this.type == 1) {
           // 符合要求歌曲列表
           this.songs = result.songs;
           // 判断歌曲有无mv
           this.mvid = result.mvid;
-          if (result.songCount) {
-            // 符合要求的歌曲数量
-            this.total = result.songCount;
-          } else {
-            // 关键词模糊默认给300条结果
-            this.total = 300;
-          }
+          // 符合要求的歌曲数量
+          this.total = result.songCount;
+          // }
         } else if (this.type == 1000) {
           // ---------------歌单调用
           this.playlists = result.playlists;
@@ -201,18 +203,9 @@ export default {
     },
 
     // -------------歌曲事件开始
-    play(id) {
-      // 播放歌曲
-      axios({
-        url: "https://autumnfish.cn/song/url",
-        params: { id },
-      }).then(({ data }) => {
-        if (data.data[0].url) {
-          this.$store.state.musicUrl = data.data[0].url;
-        } else {
-          this.$message.error("听不了，真的");
-        }
-      });
+    // 播放歌曲 调用全局播放事件
+    player(...songMsg) {
+      this.$store.commit("PLAY", songMsg);
     },
     // 分页页码变化触发搜索
     update(cur) {
@@ -250,6 +243,10 @@ export default {
     font-size: 14px;
     margin-left: 10px;
     color: #ccc;
+    span {
+      margin: 0 5px;
+      color: #409eff;
+    }
   }
   .musicBox {
     margin-top: 30px;

@@ -33,6 +33,14 @@ img {
 h3 {
   margin: 40px 0 20px 0;
 }
+.load {
+  position: absolute;
+  font-size: 50px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #409EFF;
+}
 .small {
   color: #838383;
   font-size: 13px;
@@ -142,12 +150,12 @@ h3 {
 .conmentWrap .Comment .commentBox .comments {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
+  font-size: 15px;
   border-radius: 5px;
-  background-color: #e1e0e0;
+  background-color: #ebe8e8;
 }
 .conmentWrap .Comment .commentBox .comments span.name {
-  color: blue;
+  color: #409EFF;
   font-size: 14px;
 }
 .conmentWrap .Comment .commentBox .comments .reply {
@@ -156,7 +164,10 @@ h3 {
   border-radius: 5px;
   margin: 5px 0;
   padding: 5px 15px;
-  background-color: #d0d0d0;
+  background-color: rgba(187, 187, 187, 0.397);
+}
+.conmentWrap .Comment .commentBox .comments .reply .name {
+  margin-right: 10px;
 }
 .song_wrap {
   width: 100%;
@@ -217,17 +228,20 @@ table thead th:nth-child(2) {
   width: 50px;
 }
 table thead th:nth-child(3) {
-  width: 150px;
+  width: 300px;
 }
 table thead th:nth-child(4) {
-  width: 300px;
+  width: 200px;
 }
 table thead th:nth-child(5) {
-  width: 300px;
+  width: 200px;
+}
+table tbody .T_row {
+  text-align: center;
 }
 table tbody .T_row td {
   font-size: 15px;
-  height: 60px;
+  height: 100px;
 }
 table tbody .T_row td .songImg {
   border-radius: 10px;
@@ -235,8 +249,8 @@ table tbody .T_row td .songImg {
   position: relative;
 }
 table tbody .T_row td .songImg img {
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
 }
 table tbody .T_row td .songImg .iconPlay {
   font-size: 20px;
@@ -244,9 +258,25 @@ table tbody .T_row td .songImg .iconPlay {
 table tbody .T_row td .songImg:hover .iconPlay {
   opacity: 1;
 }
+table tbody .T_row td:nth-child(3) {
+  position: relative;
+}
+table tbody .T_row td:nth-child(3) span.mv {
+  position: absolute;
+  color: red;
+  font-size: 13px;
+  top: 30px;
+}
 table tbody .T_row:hover {
   background: #dddbdb54;
 }
 table tbody .T_row:nth-child(2n) {
   background: #acaaaa54;
+}
+span.mvIcon {
+  font-size: 12px;
+  border: 2px solid red;
+  color: red;
+  padding: 0 3px;
+  margin-right: 10px;
 }

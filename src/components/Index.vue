@@ -4,7 +4,7 @@
     <nav>
       <ul>
         <router-link to="/discover" active-class="active" tag="li"
-          ><i class="el-icon-loading"></i>发现音乐</router-link
+          ><i class="el-icon-house"></i>发现音乐</router-link
         >
         <router-link to="/recommend" active-class="active" tag="li"
           ><i class="el-icon-folder-checked"></i>推荐歌单</router-link
@@ -25,6 +25,8 @@
     </div>
     <!-- 播放器 -->
     <audio
+      @pause="pause"
+      @play="play"
       :src="this.$store.state.musicUrl"
       controls
       style="width: 100%"
@@ -37,10 +39,16 @@
 export default {
   name: "Index",
   data() {
-    return {
-      // 第二方法要在父组件定义一个数据名来接收
-      // musicUrl: "",
-    };
+    return {};
+  },
+  watch: {},
+  methods: {
+    pause() {
+      document.title = "MusicHub";
+    },
+    play() {
+      document.title = `▶ ${this.$store.state.musicName}`;
+    },
   },
 };
 </script>

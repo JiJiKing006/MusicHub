@@ -5,7 +5,8 @@
       <div class="mv_box">
         <!-- mv播放区 -->
         <div class="mv_play">
-          <h3>MV详情</h3>
+          <!-- mv名称 -->
+          <h2 class="mvName"><span class="mvIcon">MV</span>{{ mvMsg.name }}</h2>
           <video controls :src="mvUrl" :poster="mvMsg.cover"></video>
         </div>
         <!-- mv介绍区 -->
@@ -16,12 +17,10 @@
               mvMsg.artistName
             }}</span>
           </p>
-          <!-- mv名称 -->
-          <h2 class="mvName">{{ mvMsg.name }}</h2>
           <!-- 发布时间 -->
           <span class="small">{{ mvMsg.publishTime }}</span>
           <!-- 介绍 -->
-          <p class="mv_introduce">{{ autorMsg.briefDesc || "暂无介绍" }}</p>
+          <p class="small">{{ autorMsg.briefDesc || "暂无介绍" }}</p>
         </div>
       </div>
       <!-- 右侧推荐MV -->
@@ -70,7 +69,7 @@
             </p>
             <!-- 回复区 -->
             <p class="reply" v-if="item.beReplied.length">
-              <span class="name">{{ item.beReplied[0].user.nickname }}:</span
+              <span class="name">{{ item.beReplied[0].user.nickname }}: </span
               >{{ item.beReplied[0].content }}
             </p>
             <p class="small">{{ item.time | formatDay }}</p>
@@ -103,7 +102,7 @@
             <p class="small">{{ item.time | formatDay }}</p>
           </section>
         </section>
-        <!-- 如果最热评论少于10就隐藏掉分页器 -->
+        <!-- 如果评论少于10就隐藏掉分页器 -->
         <el-pagination
           v-if="newAll > 10"
           background
@@ -218,7 +217,6 @@ export default {
         this.newAll = data.total;
         // z最新评论列表
         this.news = data.comments;
-
         // hot评论数量
         this.hotAll = data.hotComments.length;
         // hot评论列表
@@ -282,6 +280,9 @@ export default {
       width: 60%;
       min-width: 500px;
       .mv_play {
+        .mvName {
+          margin-bottom: 30px;
+        }
         video {
           width: 100%;
           height: 300px;
@@ -291,8 +292,8 @@ export default {
         .author {
           margin: 10px 0;
           img {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 100%;
           }
           .authorName {
@@ -300,12 +301,10 @@ export default {
             font-size: 20px;
           }
         }
-        .mvName {
-          margin-bottom: 10px;
-        }
-        .mv_introduce {
+
+        p.small {
           margin-top: 10px;
-          font-size: 15px;
+          color: rgb(136, 135, 135);
         }
       }
     }
