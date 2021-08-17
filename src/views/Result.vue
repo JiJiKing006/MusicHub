@@ -101,8 +101,7 @@
 </template>
 
 <script>
-import axios from "axios";
-
+import { requestWyy } from "../request/app";
 export default {
   name: "Result",
 
@@ -172,8 +171,8 @@ export default {
   methods: {
     search() {
       // 搜索歌曲
-      axios({
-        url: "https://autumnfish.cn/search",
+      requestWyy({
+        url: "/search",
         params: {
           keywords: this.$route.query.title,
           limit: this.limit,

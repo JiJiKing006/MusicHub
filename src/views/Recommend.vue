@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { requestWyy } from "../request/app";
 export default {
   name: "Recommend",
 
@@ -105,8 +105,8 @@ export default {
   methods: {
     topData() {
       // 歌单介绍接口
-      axios({
-        url: "https://autumnfish.cn/top/playlist/highquality",
+      requestWyy({
+        url: "/top/playlist/highquality",
         params: {
           limit: 1,
           cat: this.tag,
@@ -120,8 +120,8 @@ export default {
     },
     listData() {
       // 歌单列表接口
-      axios({
-        url: "https://autumnfish.cn/top/playlist/",
+      requestWyy({
+        url: "/top/playlist/",
         params: {
           limit: 10,
           offset: (this.curPage - 1) * 10,

@@ -43,6 +43,7 @@ export default {
   },
   watch: {},
   methods: {
+    // 播放音乐时将标题改成音乐名字
     pause() {
       document.title = "MusicHub";
     },

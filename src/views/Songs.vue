@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { requestWyy } from "../request/app";
 export default {
   name: "Songs",
 
@@ -119,8 +119,8 @@ export default {
   },
   methods: {
     getSong() {
-      axios({
-        url: "https://autumnfish.cn/top/song",
+      requestWyy({
+        url: "/top/song",
         params: {
           type: this.typeId,
         },

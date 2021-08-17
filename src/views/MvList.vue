@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { requestWyy } from "../request/app";
 export default {
   name: "MvList",
   data() {
@@ -158,8 +158,8 @@ export default {
     },
     //   获取推荐mv
     getMvList() {
-      axios({
-        url: "https://autumnfish.cn/simi/mv",
+      requestWyy({
+        url: "/simi/mv",
         params: {
           mvid: this.$route.query.id,
         },
@@ -169,8 +169,8 @@ export default {
     },
     //   获取mv是播放地址
     getMv() {
-      axios({
-        url: "https://autumnfish.cn/mv/url",
+      requestWyy({
+        url: "/mv/url",
         params: {
           //   接收传来的MVid
           id: this.$route.query.id,
@@ -181,8 +181,8 @@ export default {
     },
     // 获取mv的相关信息
     getMvMsg() {
-      axios({
-        url: "https://autumnfish.cn/mv/detail",
+      requestWyy({
+        url: "/mv/detail",
         params: {
           mvid: this.$route.query.id,
         },
@@ -192,8 +192,8 @@ export default {
     },
     // 获取歌手信息
     getManMsg() {
-      axios({
-        url: "https://autumnfish.cn/artists",
+      requestWyy({
+        url: "/artists",
         params: {
           //   接收传来的歌手id
           id: this.$route.query.artistId,
@@ -204,8 +204,8 @@ export default {
     },
     // 获取mv评论
     getCommpent() {
-      axios({
-        url: "https://autumnfish.cn/comment/mv",
+      requestWyy({
+        url: "/comment/mv",
         params: {
           //   接收传来的MVid
           id: this.$route.query.id,

@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { requestWyy } from "../request/app";
 export default {
   name: "MyHome",
   data() {
@@ -111,8 +111,8 @@ export default {
   },
   created() {
     // 用户信息
-    axios({
-      url: "https://autumnfish.cn/user/detail",
+    requestWyy({
+      url: "/user/detail",
       params: {
         uid: this.$store.state.login.id,
       },
@@ -128,8 +128,8 @@ export default {
       this.detail.listenSongs = data.listenSongs;
     });
     // 歌单信息
-    axios({
-      url: "https://autumnfish.cn/user/playlist",
+    requestWyy({
+      url: "/user/playlist",
       params: {
         uid: this.$store.state.login.id,
       },

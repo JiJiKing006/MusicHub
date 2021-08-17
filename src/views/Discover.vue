@@ -76,21 +76,22 @@
 </template>
 
 <script>
-import axios from "axios";
+import { requestWyy } from "../request/app";
+
 export default {
   name: "Discover",
   // 一开始就调用接口获取数据
   created() {
     // 轮播图调取接口
-    axios({
-      url: "https://autumnfish.cn/banner",
+    requestWyy({
+      url: "/banner",
     }).then((res) => {
       this.bannersImg = res.data.banners;
     });
 
     //推荐歌单接口
-    axios({
-      url: "https://autumnfish.cn/personalized",
+    requestWyy({
+      url: "/personalized",
       params: {
         limit: 5,
       },
@@ -99,8 +100,8 @@ export default {
     });
 
     // 最新音乐接口
-    axios({
-      url: " https://autumnfish.cn/personalized/newsong",
+    requestWyy({
+      url: "/personalized/newsong",
       params: {
         limit: 12,
       },
@@ -109,8 +110,8 @@ export default {
     });
 
     // 最新MV
-    axios({
-      url: "https://autumnfish.cn/personalized/mv",
+    requestWyy({
+      url: "/personalized/mv",
     }).then((res) => {
       this.mvList = res.data.result;
     });

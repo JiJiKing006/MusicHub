@@ -173,8 +173,8 @@
 </template>
 
 <script>
-// 导入 axios
-import axios from "axios";
+// 导入 requestWyy
+import { requestWyy } from "../request/app";
 export default {
   name: "SongList",
   data() {
@@ -227,7 +227,7 @@ export default {
 
   methods: {
     getMsg() {
-      axios({
+      requestWyy({
         url: "https://autumnfish.cn/playlist/detail",
         params: {
           id: this.$route.query.id,
@@ -240,7 +240,7 @@ export default {
     // 获取最热评论
     getHotComment() {
       // hot评论
-      axios({
+      requestWyy({
         url: "https://autumnfish.cn/comment/hot",
         params: {
           id: this.$route.query.id,
@@ -256,7 +256,7 @@ export default {
     // 获取最新评论
     getNewComment() {
       // new评论
-      axios({
+      requestWyy({
         url: "https://autumnfish.cn/comment/playlist",
         params: {
           id: this.$route.query.id,

@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { requestWyy } from "../request/app";
 export default {
   name: "Mv",
 
@@ -129,8 +129,8 @@ export default {
   },
   methods: {
     getSong() {
-      axios({
-        url: "https://autumnfish.cn/mv/all",
+      requestWyy({
+        url: "/mv/all",
         params: {
           area: this.area,
           type: this.type,
@@ -146,6 +146,7 @@ export default {
         }
       });
     },
+    // 分页
     update(cur) {
       this.page = cur;
     },

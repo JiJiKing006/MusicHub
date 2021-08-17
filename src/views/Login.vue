@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { requestWyy } from "../request/app";
 export default {
   name: "Login",
   data() {
@@ -70,9 +70,9 @@ export default {
       // 表单验证
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          // 表单填写正确就开始调取接口
-          axios({
-            url: "https://autumnfish.cn/login/cellphone",
+          // 调用请求
+          requestWyy({
+            url: "/login/cellphone",
             params: {
               phone: this.loginForm.username,
               password: this.loginForm.password,
@@ -103,6 +103,7 @@ export default {
                 }
               } else if (data.code == 502) {
                 this.$message.error(data.msg);
+                console.log(this);
               } else {
                 this.$message.error("账号不存在！");
               }
