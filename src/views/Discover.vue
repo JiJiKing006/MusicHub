@@ -63,7 +63,9 @@
               class="el-icon-video-play iconPlay"
               @click="toMvList(mv.id, mv.artistId)"
             ></span>
-            <span class="time">{{ mv.duration | formatDate }}</span>
+            <span class="time">{{
+              $store.getters.formatDate(mv.duration)
+            }}</span>
           </div>
           <div class="mvBox_Msg">
             <p>{{ mv.name }}</p>
@@ -128,21 +130,11 @@ export default {
       mvList: [],
     };
   },
-  filters: {
-    // 时长格式化
-    formatDate(val) {
-      const all = val / 1000;
-      const m = (parseInt(all / 60) + "").padStart(2, "0");
-      const s = (parseInt(all % 60) + "").padStart(2, "0");
-      return m + ":" + s;
-    },
-  },
+
   methods: {
     // 播放歌曲 调用全局播放事件
-    player(...songMsg) {
-      this.$store.commit("PLAY", songMsg);
-      // 第二方法，不用vuex
-      // this.$parent.musicUrl = res.data.data[0].url;
+    player(id, name) {
+      this.$store.dispatch("aPlay", { id, name });
     },
 
     // 点击歌单。拿到id传给歌单组件

@@ -77,7 +77,9 @@
             class="el-icon-video-play iconPlay"
             @click="toMvList(song.id, song.artistId || 854363)"
           ></span>
-          <span class="time">{{ song.duration | formatDate }}</span>
+          <span class="time">{{
+            $store.getters.formatDate(song.duration)
+          }}</span>
         </div>
         <div class="mvBox_Msg">
           <p>{{ song.name }}</p>
@@ -117,15 +119,6 @@ export default {
       type: "全部",
       order: "上升最快",
     };
-  },
-  // 时长格式化
-  filters: {
-    formatDate(val) {
-      const all = val / 1000;
-      const m = (parseInt(all / 60) + "").padStart(2, "0");
-      const s = (parseInt(all % 60) + "").padStart(2, "0");
-      return m + ":" + s;
-    },
   },
   methods: {
     getSong() {

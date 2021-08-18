@@ -38,7 +38,7 @@
                 <!-- @click="play(song.id)" -->
                 <td>{{ song.artists[0].name }}</td>
                 <td>《{{ song.album.name }}》</td>
-                <td>{{ song.duration | formatDate }}</td>
+                <td>{{ $store.getters.formatDate(song.duration) }}</td>
               </tr>
             </tbody>
           </table>
@@ -203,8 +203,8 @@ export default {
 
     // -------------歌曲事件开始
     // 播放歌曲 调用全局播放事件
-    player(...songMsg) {
-      this.$store.commit("PLAY", songMsg);
+    player(id, name) {
+      this.$store.dispatch("aPlay", { id, name });
     },
     // 分页页码变化触发搜索
     update(cur) {

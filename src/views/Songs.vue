@@ -80,7 +80,7 @@
           </td>
           <td>{{ song.artists[0].name }}</td>
           <td>{{ song.album.name }}</td>
-          <td>{{ song.duration | formatDate }}</td>
+          <td>{{ $store.getters.formatDate(song.duration) }}</td>
         </tr>
       </tbody>
     </table>
@@ -131,8 +131,8 @@ export default {
       });
     },
     // 播放歌曲 调用全局播放事件
-    player(...songMsg) {
-      this.$store.commit("PLAY", songMsg);
+    player(id, name) {
+      this.$store.dispatch("aPlay", { id, name });
     },
     // 跳转mv详情路由 并且传id
     toMvList(id, artistId) {
@@ -143,14 +143,6 @@ export default {
           artistId,
         },
       });
-    },
-  },
-  filters: {
-    formatDate(val) {
-      const all = val / 1000;
-      const m = (parseInt(all / 60) + "").padStart(2, "0");
-      const s = (parseInt(all % 60) + "").padStart(2, "0");
-      return m + ":" + s;
     },
   },
 };

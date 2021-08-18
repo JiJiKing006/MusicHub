@@ -18,47 +18,61 @@ export default new Vuex.Store({
       nickName: "",
     },
   },
-  mutations: {
-    // 播放歌曲，直接commit
-    // 播放歌曲
-    PLAY(state, songMsg) {
-      const id = songMsg[0];
-      requestWyy({
-        url: "/song/url",
-        params: { id },
-      }).then(({ data: { data } }) => {
-        if (data[0].url) {
-          // 将正在播放歌曲名存入seesion
-          sessionStorage.setItem("musicName", songMsg[1]);
-          // 播放歌曲后，将网页标题改成歌曲名
-          state.musicName = songMsg[1];
-
-          // 刷新之后播放器保留上一首
-          sessionStorage.setItem("musicUrl", data[0].url);
-          state.musicUrl = data[0].url;
+  getters: {
+    formatDate() {
+      return function(val) {
+        const all = val / 1000;
+        const m = (parseInt(all / 60) + "").padStart(2, "0");
+        const s = (parseInt(all % 60) + "").padStart(2, "0");
+        return m + ":" + s;
+      };
+    },
+    // 有参数具体到分秒，没有就分到日
+    formatDay() {
+      return function(val, str) {
+        const dt = new Date(val);
+        const year = (dt.getFullYear() + "").padStart(2, "0");
+        const month = (dt.getMonth() + 1 + "").padStart(2, "0");
+        const date = (dt.getDate() + "").padStart(2, "0");
+        const hours = (dt.getHours() + "").padStart(2, "0");
+        const minutes = (dt.getMinutes() + "").padStart(2, "0");
+        const seconds = (dt.getSeconds() + "").padStart(2, "0");
+        if (str == "xxxx-mm-dd") {
+          return `${year}-${month}-${date}`;
         } else {
-          window.vue.$message.error("听不了，真的");
+          return `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
         }
-      });
-      // axios({
-      //   url: "https://autumnfish.cn/song/url",
-      //   params: { id },
-      // }).then(({ data: { data } }) => {
-      //   if (data[0].url) {
-      //     // 将正在播放歌曲名存入seesion
-      //     sessionStorage.setItem("musicName", songMsg[1]);
-      //     // 播放歌曲后，将网页标题改成歌曲名
-      //     state.musicName = songMsg[1];
-
-      //     // 刷新之后播放器保留上一首
-      //     sessionStorage.setItem("musicUrl", data[0].url);
-      //     state.musicUrl = data[0].url;
-      //   } else {
-      //     window.vue.$message.error("听不了，真的");
-      //   }
-      // });
+      };
     },
   },
-  actions: {},
+  actions: {
+    // 异步操作写在actions里
+    aPlay({ commit }, songMsg) {
+      requestWyy({
+        url: "/song/url",
+        params: { id: songMsg.id },
+      }).then(({ data: { data } }) => {
+        commit("PLAY", { data, name: songMsg.name });
+      });
+    },
+  },
+  mutations: {
+    // 播放歌曲
+    PLAY(state, obj) {
+      const { data, name } = obj;
+      if (data[0].url) {
+        // 将正在播放歌曲名存入seesion
+        sessionStorage.setItem("musicName", name);
+        // 播放歌曲后，将网页标题改成歌曲名
+        state.musicName = name;
+        // 刷新之后播放器保留上一首
+        sessionStorage.setItem("musicUrl", data[0].url);
+        state.musicUrl = data[0].url;
+      } else {
+        window.vue.$message.error("听不了，真的");
+      }
+    },
+  },
+
   modules: {},
 });

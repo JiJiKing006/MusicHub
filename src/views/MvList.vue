@@ -37,7 +37,9 @@
                 class="el-icon-video-play iconPlay"
                 @click="toMvList(mv.id, mv.artistId)"
               ></span>
-              <span class="time">{{ mv.duration | formatDate }}</span>
+              <span class="time">{{
+                $store.getters.formatDate(mv.duration)
+              }}</span>
             </div>
             <div class="mvBox_Msg">
               <p>{{ mv.name }}</p>
@@ -72,7 +74,7 @@
               <span class="name">{{ item.beReplied[0].user.nickname }}: </span
               >{{ item.beReplied[0].content }}
             </p>
-            <p class="small">{{ item.time | formatDay }}</p>
+            <p class="small">{{ $store.getters.formatDay(item.time) }}</p>
           </section>
         </section>
       </div>
@@ -99,7 +101,7 @@
               <span class="name">{{ item.beReplied[0].user.nickname }}:</span
               >{{ item.beReplied[0].content }}
             </p>
-            <p class="small">{{ item.time | formatDay }}</p>
+            <p class="small">{{ $store.getters.formatDay(item.time) }}</p>
           </section>
         </section>
         <!-- 如果评论少于10就隐藏掉分页器 -->
@@ -241,30 +243,6 @@ export default {
         this.getMvList();
         this.getCommpent();
       },
-    },
-  },
-  // 时长格式化
-  filters: {
-    formatDate(val) {
-      const all = val / 1000;
-      const m = (parseInt(all / 60) + "").padStart(2, "0");
-      const s = (parseInt(all % 60) + "").padStart(2, "0");
-      return m + ":" + s;
-    },
-    // 有参数具体到分秒，没有就分到日
-    formatDay(val, str) {
-      const dt = new Date(val);
-      const year = (dt.getFullYear() + "").padStart(2, "0");
-      const month = (dt.getMonth() + 1 + "").padStart(2, "0");
-      const date = (dt.getDate() + "").padStart(2, "0");
-      const hours = (dt.getHours() + "").padStart(2, "0");
-      const minutes = (dt.getMinutes() + "").padStart(2, "0");
-      const seconds = (dt.getSeconds() + "").padStart(2, "0");
-      if (str == "xxxx-mm-dd") {
-        return `${year}-${month}-${date}`;
-      } else {
-        return `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
-      }
     },
   },
 };

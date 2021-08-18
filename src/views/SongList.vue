@@ -14,7 +14,7 @@
           <img :src="playMsg.creator.avatarUrl" alt="" />
           <span>{{ playMsg.creator.nickname }}</span
           ><span class="small">{{
-            playMsg.createTime | formatDay("xxxx-mm-dd")
+            $store.getters.formatDay(playMsg.createTime, "xxxx-mm-dd")
           }}</span
           >创建
         </p>
@@ -69,7 +69,7 @@
               </td>
               <td>{{ song.ar[0].name }}</td>
               <td>{{ song.al.name }}</td>
-              <td>{{ song.dt | formatDate }}</td>
+              <td>{{ $store.getters.formatDate(song.dt) }}</td>
             </tr>
           </tbody>
         </table>
@@ -105,7 +105,7 @@
                     >{{ item.beReplied[0].user.nickname }}:</span
                   >{{ item.beReplied[0].content }}
                 </p>
-                <p class="small">{{ item.time | formatDay }}</p>
+                <p class="small">{{ $store.getters.formatDay(item.time) }}</p>
               </section>
             </section>
             <!-- 如果最热评论少于10就隐藏掉分页器 -->
@@ -153,7 +153,7 @@
                     >{{ item.beReplied[0].user.nickname }}:</span
                   >{{ item.beReplied[0].content }}
                 </p>
-                <p class="small">{{ item.time | formatDay }}</p>
+                <p class="small">{{ $store.getters.formatDay(item.time) }}</p>
               </section>
             </section>
             <!-- 如果最热评论少于10就隐藏掉分页器 -->
@@ -200,31 +200,6 @@ export default {
       newPage: 1,
     };
   },
-  // 时长/时间过滤
-  filters: {
-    formatDate(val) {
-      const all = val / 1000;
-      const m = (parseInt(all / 60) + "").padStart(2, "0");
-      const s = (parseInt(all % 60) + "").padStart(2, "0");
-      return m + ":" + s;
-    },
-    // 有参数具体到分秒，没有就分到日
-    formatDay(val, str) {
-      const dt = new Date(val);
-      const year = (dt.getFullYear() + "").padStart(2, "0");
-      const month = (dt.getMonth() + 1 + "").padStart(2, "0");
-      const date = (dt.getDate() + "").padStart(2, "0");
-      const hours = (dt.getHours() + "").padStart(2, "0");
-      const minutes = (dt.getMinutes() + "").padStart(2, "0");
-      const seconds = (dt.getSeconds() + "").padStart(2, "0");
-      if (str == "xxxx-mm-dd") {
-        return `${year}-${month}-${date}`;
-      } else {
-        return `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
-      }
-    },
-  },
-
   methods: {
     getMsg() {
       requestWyy({
@@ -280,8 +255,8 @@ export default {
     },
 
     // 播放歌曲 调用全局播放事件
-    player(...songMsg) {
-      this.$store.commit("PLAY", songMsg);
+    player(id, name) {
+      this.$store.dispatch("aPlay", { id, name });
     },
     // 跳转mv详情路由 并且传id
     toMvList(id, artistId) {

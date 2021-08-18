@@ -34,7 +34,9 @@
             个人介绍:<span>{{ detail.signature }}</span>
           </p>
           <p>
-            创建日期:<span>{{ detail.createTime | formatDay }}</span>
+            创建日期:<span>{{
+              $store.getters.formatDay(detail.createTime)
+            }}</span>
           </p>
         </section>
       </div>
@@ -85,30 +87,7 @@ export default {
       songList: [],
     };
   },
-  // 时长/时间过滤
-  filters: {
-    formatDate(val) {
-      const all = val / 1000;
-      const m = (parseInt(all / 60) + "").padStart(2, "0");
-      const s = (parseInt(all % 60) + "").padStart(2, "0");
-      return m + ":" + s;
-    },
-    // 有参数具体到分秒，没有就分到日
-    formatDay(val, str) {
-      const dt = new Date(val);
-      const year = (dt.getFullYear() + "").padStart(2, "0");
-      const month = (dt.getMonth() + 1 + "").padStart(2, "0");
-      const date = (dt.getDate() + "").padStart(2, "0");
-      const hours = (dt.getHours() + "").padStart(2, "0");
-      const minutes = (dt.getMinutes() + "").padStart(2, "0");
-      const seconds = (dt.getSeconds() + "").padStart(2, "0");
-      if (str == "xxxx-mm-dd") {
-        return `${year}-${month}-${date}`;
-      } else {
-        return `${year}-${month}-${date}-${hours}:${minutes}:${seconds}`;
-      }
-    },
-  },
+
   created() {
     // 用户信息
     requestWyy({
